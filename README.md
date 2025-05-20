@@ -1,6 +1,6 @@
 # # Dự án cuối kỳ môn Phát triển Web 2
 ## 💫 About Me:
-<img src="https://github.com/user-attachments/assets/ef8febd2-d1f5-47bd-9895-b3390d0a07a2" width="250"> <br/>
+<img src="https://github.com/user-attachments/assets/63641f6a-d50b-48e3-9fc6-7e3e5eaa125f" width="250"> <br/>
 <ul>
   <li>
     Name: Hong Duong
