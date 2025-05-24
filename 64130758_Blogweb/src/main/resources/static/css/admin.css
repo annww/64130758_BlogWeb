@@ -1,0 +1,21 @@
+@charset "UTF-8";
+body {
+    font-family: Arial;
+    max-width: 800px;
+    margin: auto;
+}
+h1 {
+    text-align: center;
+    margin-top: 30px;
+}
+.post {
+    border-bottom: 1px solid #ccc;
+    padding: 15px 0;
+}
+.post h2 {
+    margin-bottom: 5px;
+}
+.meta {
+    color: gray;
+    font-size: 0.9em;
+}
