@@ -1,0 +1,11 @@
+@charset "UTF-8";
+.image_banner{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color:#FBDC4E;
+}
+
+.content{
+	padding-top: 20px;
+}

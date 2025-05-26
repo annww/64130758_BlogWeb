@@ -5,5 +5,5 @@ import java.util.Optional;
 import ntu.hongdta_64130758.models.User;
 
 public interface IUserService{
-	Optional<User> findByUsername(String username);
+	User findByUsername(String username);
 }

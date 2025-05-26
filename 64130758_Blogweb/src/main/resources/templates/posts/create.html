@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Tạo bài viết</title></head>
+<body>
+<h1>Tạo bài viết mới</h1>
+<form th:action="@{/posts/create}" th:object="${post}" method="post">
+    <label>Tiêu đề: <input type="text" th:field="*{title}" /></label><br/>
+    <label>Nội dung: <textarea th:field="*{content}"></textarea></label><br/>
+    <button type="submit">Lưu</button>
+</form>
+<a href="/posts">Hủy</a>
+</body>
+</html>

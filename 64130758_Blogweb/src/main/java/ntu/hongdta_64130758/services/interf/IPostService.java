@@ -7,6 +7,6 @@ import ntu.hongdta_64130758.models.Post;
 public interface IPostService {
     List<Post> getAllPosts();
     Post getPostById(Long id);
-    Post createPost(Post post);
-    List<Post> findAll();
+    Post savePost(Post post);
+    Post findById(Long id);
 }

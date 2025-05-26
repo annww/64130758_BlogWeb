@@ -1,5 +1,6 @@
 package ntu.hongdta_64130758.services.implement;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +25,20 @@ public class PostService implements IPostService {
     public Post getPostById(Long id) {
         return postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
     }
-
+    
     @Override
-    public Post createPost(Post post) {
+    public Post savePost(Post post) {
+        if (post == null) {
+            throw new IllegalArgumentException("Post không được null");
+        }
+        post.setCreatedAt(LocalDateTime.now());
         return postRepository.save(post);
     }
     
     @Override
-    public List<Post> findAll() {
-        return postRepository.findAll();
+    public Post findById(Long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found with id " + id));
     }
+
 }

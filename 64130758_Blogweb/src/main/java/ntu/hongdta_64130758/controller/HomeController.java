@@ -35,7 +35,7 @@ public class HomeController {
 
         model.addAttribute("full_name", fullName);
         model.addAttribute("categories", categoryRepository.findAll());
-        model.addAttribute("posts", postService.findAll());
+        model.addAttribute("posts", postService.getAllPosts());
 
         return "home";
     }

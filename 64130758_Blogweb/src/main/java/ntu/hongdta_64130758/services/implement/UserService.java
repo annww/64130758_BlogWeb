@@ -14,16 +14,17 @@ import java.util.Optional;
 public class UserService implements IUserService, UserDetailsService {
 
     @Autowired
-    private UserRepository userRepo;
+    private UserRepository userRepository;
 
     @Override
-    public Optional<User> findByUsername(String username) {
-        return userRepo.findByUsername(username);
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy user: " + username));
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepo.findByUsername(username)
+        User user = userRepository.findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return new CustomUserDetails(user);
     }
