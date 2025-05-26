@@ -21,7 +21,6 @@
 		      th:action="@{'/posts/comments/' + ${comment.id} + '/delete'}" 
 		      method="post" style="display:inline">
 		    
-		    <!-- Đây là phần cần thêm để tránh lỗi CSRF khi dùng Spring Security -->
 		    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 		
 		    <button type="submit">Xóa</button>
@@ -30,8 +29,7 @@
 	    </li>
 	  </ul>
 	</div>
-	
-	<!-- Form để thêm comment -->
+
 	<form th:action="@{/posts/{id}/comments(id=${post.id})}" method="post">
 	  <textarea name="content" placeholder="Write your comment here" required></textarea><br>
 	  <button type="submit">Submit Comment</button>
