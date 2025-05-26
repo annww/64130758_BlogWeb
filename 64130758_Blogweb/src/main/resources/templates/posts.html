@@ -10,7 +10,7 @@
   <link th:href="@{/css/home.css}" rel="stylesheet">
 </head>
 <body>
-
+<div th:replace="admin::header"></div>
 <h1>Danh sách bài viết</h1>
 
 <div th:each="post : ${posts}" class="post">

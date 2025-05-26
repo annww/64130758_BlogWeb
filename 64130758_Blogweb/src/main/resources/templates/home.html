@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Trang chủ</title>
+</head>
+<body>
+<div th:replace="admin :: header"></div>
+    <h1>Danh sách danh mục</h1>
+    <ul>
+        <li th:each="cat : ${categories}" th:text="${cat.name}"></li>
+    </ul>
+</body>
+</html>

@@ -8,4 +8,5 @@ public interface IPostService {
     List<Post> getAllPosts();
     Post getPostById(Long id);
     Post createPost(Post post);
+    List<Post> findAll();
 }
