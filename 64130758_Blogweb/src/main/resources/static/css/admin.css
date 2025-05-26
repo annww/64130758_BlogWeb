@@ -1,9 +1,15 @@
 @charset "UTF-8";
-body {
-    font-family: Arial;
-    max-width: 800px;
-    margin: auto;
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Geologica:wght@100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+:root{
+	--main-color: #AF2C2C;
+	--text-color: #311B46;
+	--white-color: #ffffff;
+	--sub-text-color: #2E1B46;
+	--black-color: #000000;
+	--border: 20px;
 }
+
 h1 {
     text-align: center;
     margin-top: 30px;
@@ -18,4 +24,31 @@ h1 {
 .meta {
     color: gray;
     font-size: 0.9em;
+}
+body {
+  	font-family: "Noto Sans", sans-serif;
+	font-weight: 400;
+}
+.navbar-brand {
+  font-weight: bold;
+}
+.navbar-text {
+  margin-right: 15px;
+}
+
+.navbar{
+	background-color: #FFEDA8;
+}
+
+.navbar .navbar-brand{
+	color: #606054;
+}
+.navbar .navbar-brand:hover {
+	color: #30302A;
+}
+.navbar .nav-link {
+	color: #606054 !important;
+}
+span{
+  color: #606054;
 }

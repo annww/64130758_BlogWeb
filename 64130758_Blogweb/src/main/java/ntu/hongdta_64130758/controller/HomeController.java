@@ -7,11 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import ntu.hongdta_64130758.models.Category;
 import ntu.hongdta_64130758.models.Post;
 import ntu.hongdta_64130758.repositories.CategoryRepository;
+import ntu.hongdta_64130758.security.CustomUserDetails;
 import ntu.hongdta_64130758.services.implement.PostService;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Controller
 public class HomeController {
@@ -24,14 +27,21 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) {
-        List<Category> categories = categoryRepository.findAll(); 
-        model.addAttribute("categories", categories);
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String fullName = "Khách";
+        if (auth.getPrincipal() instanceof CustomUserDetails userDetails) {
+            fullName = userDetails.getFullName();
+        }
 
-        List<Post> posts = postService.findAll(); // Lấy danh sách bài viết
-        model.addAttribute("posts", posts);
+        model.addAttribute("full_name", fullName);
+        model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("posts", postService.findAll());
 
-        model.addAttribute("full_name", "Nguyễn Văn A"); // Thêm tên người dùng (hoặc từ session)
-
-        return "home"; // trả về trang home.html
+        return "home";
+    }
+    
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
     }
 }

@@ -1,7 +1,11 @@
 package ntu.hongdta_64130758.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
+import java.util.Optional;
 import ntu.hongdta_64130758.models.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface UserRepository extends JpaRepository<User, Long> {}
+@Repository
+public interface UserRepository extends JpaRepository<User, Integer> {
+    Optional<User> findByUsername(String username);
+}
