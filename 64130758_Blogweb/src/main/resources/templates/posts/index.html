@@ -12,17 +12,34 @@
 <div th:replace="~{admin::header}"></div>
 <h1>Danh sách bài viết</h1>
 <div class="container mt-3">
-<form class="d-flex mb-3" th:action="@{/posts/search}" method="get">
-    <input class="form-control me-2" type="search" name="keyword" placeholder="Tìm kiếm bài viết..." aria-label="Search">
-    <button class="btn btn-outline-primary" type="submit">Tìm</button>
-</form>
-<div th:if="${posts.size() == 0}">
-    <p>Không tìm thấy bài viết nào.</p>
-</div>
-    <a class="btn btn-primary mb-3" th:href="@{/posts/create}">
-        <i class='bx bx-plus'></i> Tạo bài viết
-    </a>
+    <form class="d-flex mb-3 gap-2" th:action="@{/posts/search}" method="get">
+        <input class="form-control" type="search" name="keyword" placeholder="Tìm kiếm bài viết..." aria-label="Search">
+        <button class="btn btn-outline-primary" type="submit">Tìm</button>
+    </form>
+    <div class="mb-3 d-flex gap-2">
+	    <a class="btn btn-outline-success" th:href="@{/posts?sort=newest}">
+	        <i class='bx bx-sort-down'></i> Lọc mới nhất
+	    </a>
+	    <a class="btn btn-outline-success" th:href="@{/posts?sort=oldest}">
+	        <i class='bx bx-sort-up'></i> Lọc cũ nhất
+	    </a>
+	    <a class="btn btn-outline-success" th:href="@{/posts?sort=alphabet_asc}">
+	        <i class='bx bx-sort-alpha-down'></i> A → Z
+	    </a>
+	    <a class="btn btn-outline-success" th:href="@{/posts?sort=alphabet_desc}">
+	        <i class='bx bx-sort-alpha-up'></i> Z → A
+	    </a>
+	    <a class="btn btn-outline-secondary" th:href="@{/posts}">
+	        <i class='bx bx-reset'></i> Reset
+	    </a>
+	    <a class="btn btn-primary ms-auto" th:href="@{/posts/create}">
+	        <i class='bx bx-plus'></i> Tạo bài viết
+	    </a>
 
+    </div>
+    <div th:if="${posts.size() == 0}">
+        <p>Không tìm thấy bài viết nào.</p>
+    </div>
     <div th:each="post : ${posts}" class="card mb-3">
         <div class="card-body">
             <h5 class="card-title">

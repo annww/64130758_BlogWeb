@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ntu.hongdta_64130758.models.Comment;
 import ntu.hongdta_64130758.models.Post;
@@ -42,14 +43,22 @@ public class PostController {
     private ICategoryService categoryService;
     
     @Autowired
-    private CategoryRepository categoryRepository;
-    
-    @Autowired
     private PostRepository postRepository;
     
     @GetMapping
-    public String showPostList(Model model) {
+    public String showPostList(@RequestParam(value = "sort", required = false) String sort,Model model) {
         List<Post> posts = postService.getAllPosts();
+        if ("newest".equals(sort)) {
+            posts = postRepository.findAllByOrderByCreatedAtDesc();
+        } else if ("oldest".equals(sort)) {
+            posts = postRepository.findAllByOrderByCreatedAtAsc();
+        } else if ("alphabet_asc".equals(sort)) {
+            posts = postRepository.findAllByOrderByTitleAsc();
+        } else if ("alphabet_desc".equals(sort)) {
+            posts = postRepository.findAllByOrderByTitleDesc();
+        } else {
+            posts = postService.getAllPosts();
+        }
         model.addAttribute("posts", posts);
         return "posts/index"; 
     }
@@ -103,21 +112,23 @@ public class PostController {
 
     @PostMapping("/create")
     public String createPost(@ModelAttribute("post") Post post,
-                             @AuthenticationPrincipal UserDetails userDetails) {
+                             @AuthenticationPrincipal UserDetails userDetails, 
+                             RedirectAttributes redirectAttributes) {
         User user = userService.findByUsername(userDetails.getUsername());
         post.setAuthor(user);
         postService.savePost(post);
+        redirectAttributes.addFlashAttribute("successMessage", "Tạo bài viết thành công!");
         return "redirect:/posts";
     }
     
-    @PostMapping("/posts")
-    public String savePost(@ModelAttribute Post post, Principal principal) {
-        User author = userService.findByUsername(principal.getName()); 
-        post.setAuthor(author);
-        post.setCreatedAt(LocalDateTime.now());
-        postService.savePost(post);
-        return "redirect:/posts";
-    }
+//    @PostMapping("/posts")
+//    public String savePost(@ModelAttribute Post post, Principal principal) {
+//        User author = userService.findByUsername(principal.getName()); 
+//        post.setAuthor(author);
+//        post.setCreatedAt(LocalDateTime.now());
+//        postService.savePost(post);
+//        return "redirect:/posts";
+//    }
     
     @GetMapping("/search")
     public String searchPosts(@RequestParam("keyword") String keyword, Model model) {
