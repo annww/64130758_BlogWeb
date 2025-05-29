@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 import ntu.hongdta_64130758.models.Category;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category, Long> {}
+public interface CategoryRepository extends JpaRepository<Category, Long> {
+	boolean existsByName(String name);
+}

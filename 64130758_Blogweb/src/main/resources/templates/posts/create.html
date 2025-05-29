@@ -21,7 +21,6 @@
                 <textarea class="form-control" rows="5" th:field="*{content}" placeholder="Nội dung" required></textarea>
             </div>
 
-            <!-- Chọn chuyên mục -->
             <div class="mb-3">
                 <label class="form-label">Chọn chuyên mục:</label>
                 <div class="d-flex align-items-center gap-2">
@@ -40,22 +39,21 @@
             <button type="submit" class="btn btn-success">Tạo bài viết</button>
         </form>
     </div>
-
-    <!-- Modal thêm chuyên mục -->
     <div id="categoryModal" class="position-fixed top-50 start-50 translate-middle bg-white border rounded p-4 shadow"
          style="display:none; z-index:1000; min-width: 300px;">
         <h5 class="mb-3">Thêm chuyên mục mới</h5>
-        <input type="text" class="form-control mb-3" id="newCategoryName" placeholder="Tên chuyên mục" />
-        <div class="d-flex justify-content-end gap-2">
-            <button class="btn btn-primary" onclick="submitNewCategory()">Lưu</button>
-            <button class="btn btn-secondary" onclick="closeCategoryModal()">Hủy</button>
-        </div>
+        <form action="/categories/create" method="post"> 
+	        <input type="text" class="form-control mb-3" name="newCategoryName" id="newCategoryName" placeholder="Tên chuyên mục" />
+	        <div class="d-flex justify-content-end gap-2">
+	            <button type="submit" class="btn btn-primary" onclick="submitNewCategory()">Lưu</button>
+	            <button class="btn btn-secondary" onclick="closeCategoryModal()">Hủy</button>
+	        </div>
+        </form>
+        
     </div>
 
-    <!-- Overlay mờ nền -->
     <div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:999;"></div>
 
-    <!-- Script -->
     <script>
         function openCategoryModal() {
             document.getElementById('categoryModal').style.display = 'block';
@@ -67,7 +65,7 @@
             document.getElementById('modalOverlay').style.display = 'none';
         }
 
-        async function submitNewCategory() {
+        /* async function submitNewCategory() {
             const name = document.getElementById('newCategoryName').value.trim();
             if (!name) return alert("Vui lòng nhập tên chuyên mục");
 
@@ -91,9 +89,9 @@
 
                 closeCategoryModal();
             } else {
-                alert("Thêm thất bại");
+                alert("Thêm thất b	ại");
             }
-        }
+        } */
     </script>
 </body>
 </html>

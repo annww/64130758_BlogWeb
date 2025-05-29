@@ -12,6 +12,13 @@
 <div th:replace="~{admin::header}"></div>
 <h1>Danh sách bài viết</h1>
 <div class="container mt-3">
+<form class="d-flex mb-3" th:action="@{/posts/search}" method="get">
+    <input class="form-control me-2" type="search" name="keyword" placeholder="Tìm kiếm bài viết..." aria-label="Search">
+    <button class="btn btn-outline-primary" type="submit">Tìm</button>
+</form>
+<div th:if="${posts.size() == 0}">
+    <p>Không tìm thấy bài viết nào.</p>
+</div>
     <a class="btn btn-primary mb-3" th:href="@{/posts/create}">
         <i class='bx bx-plus'></i> Tạo bài viết
     </a>

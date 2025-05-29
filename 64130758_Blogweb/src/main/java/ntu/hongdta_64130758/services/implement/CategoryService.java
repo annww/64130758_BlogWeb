@@ -19,4 +19,14 @@ public class CategoryService implements ICategoryService {
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
+    
+    public Category saveCategory(String name) {
+        if (!categoryRepository.existsByName(name)) {
+        	Category cat = new Category();
+        	cat.setName(name);
+            return categoryRepository.save(cat);
+        }
+        return null;
+    }
+
 }

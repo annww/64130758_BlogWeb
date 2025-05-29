@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ntu.hongdta_64130758.models.Comment;
 import ntu.hongdta_64130758.models.Post;
 import ntu.hongdta_64130758.models.User;
+import ntu.hongdta_64130758.repositories.CategoryRepository;
+import ntu.hongdta_64130758.repositories.PostRepository;
 import ntu.hongdta_64130758.services.interf.ICategoryService;
 import ntu.hongdta_64130758.services.interf.ICommentService;
 import ntu.hongdta_64130758.services.interf.IPostService;
@@ -38,6 +40,12 @@ public class PostController {
     
     @Autowired
     private ICategoryService categoryService;
+    
+    @Autowired
+    private CategoryRepository categoryRepository;
+    
+    @Autowired
+    private PostRepository postRepository;
     
     @GetMapping
     public String showPostList(Model model) {
@@ -111,5 +119,10 @@ public class PostController {
         return "redirect:/posts";
     }
     
-    
+    @GetMapping("/search")
+    public String searchPosts(@RequestParam("keyword") String keyword, Model model) {
+        List<Post> searchResults = postRepository.findByTitleContainingIgnoreCase(keyword);
+        model.addAttribute("posts", searchResults);
+        return "posts/index";
+    }
 }
