@@ -47,9 +47,13 @@ public class Post {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public User getAuthor() { return author; }
-    public void setAuthor(User author) { this.author = author; }
+    public User getAuthor() {
+        return author;
+    }
 
+    public void setAuthor(User author) {
+        this.author = author;
+    }
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }
 }

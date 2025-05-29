@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ntu.hongdta_64130758.models.Comment;
 import ntu.hongdta_64130758.models.Post;
 import ntu.hongdta_64130758.models.User;
+import ntu.hongdta_64130758.services.interf.ICategoryService;
 import ntu.hongdta_64130758.services.interf.ICommentService;
 import ntu.hongdta_64130758.services.interf.IPostService;
 import ntu.hongdta_64130758.services.interf.IUserService;
@@ -34,6 +35,9 @@ public class PostController {
     
     @Autowired
     private IUserService userService;
+    
+    @Autowired
+    private ICategoryService categoryService;
     
     @GetMapping
     public String showPostList(Model model) {
@@ -84,16 +88,28 @@ public class PostController {
  	
     @GetMapping("/create")
     public String showCreatePostForm(Model model) {
-        model.addAttribute("post", new Post()); 
+    	model.addAttribute("post", new Post()); 
+        model.addAttribute("categories", categoryService.getAllCategories());
         return "posts/create"; 
     }
 
     @PostMapping("/create")
-    public String createPost(@ModelAttribute("post") Post post) {
+    public String createPost(@ModelAttribute("post") Post post,
+                             @AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.findByUsername(userDetails.getUsername());
+        post.setAuthor(user);
         postService.savePost(post);
-        return "redirect:/posts"; 
+        return "redirect:/posts";
     }
     
-   
-
+    @PostMapping("/posts")
+    public String savePost(@ModelAttribute Post post, Principal principal) {
+        User author = userService.findByUsername(principal.getName()); 
+        post.setAuthor(author);
+        post.setCreatedAt(LocalDateTime.now());
+        postService.savePost(post);
+        return "redirect:/posts";
+    }
+    
+    
 }

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<head>
   <meta charset="UTF-8">
   <title>Trang chủ</title>
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
@@ -12,18 +11,26 @@
 <body>
 <div th:replace="~{admin::header}"></div>
 <h1>Danh sách bài viết</h1>
+<div class="container mt-3">
+    <a class="btn btn-primary mb-3" th:href="@{/posts/create}">
+        <i class='bx bx-plus'></i> Tạo bài viết
+    </a>
 
-<div th:each="post : ${posts}" class="post">
-    <h2>
-		<a th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.title}">Tiêu đề</a>
-	</h2>
-    <p class="meta">
-        Tác giả: <span th:text="${post.author.fullName}">Tên tác giả</span> |
-        Chuyên mục: <span th:text="${post.category.name}">Tên chuyên mục</span> |
-        Ngày đăng: <span th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy')}">Ngày</span>
-    </p>
-    <p th:text="${post.content}">Nội dung bài viết...</p>
+    <div th:each="post : ${posts}" class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">
+                <a th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.title}">Tiêu đề</a>
+            </h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+                <span th:text="${post.author != null ? post.author.fullName : 'Không rõ'}">Tên tác giả</span> |
+                Chuyên mục: <span th:text="${post.category.name}">Tên chuyên mục</span> |
+                Ngày đăng: <span th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy')}">Ngày</span>
+            </h6>
+            <span th:text="${#strings.abbreviate(post.content, 150)}">Nội dung bài viết...</span>
+        </div>
+    </div>
 </div>
+
 
 </body>
 </html>

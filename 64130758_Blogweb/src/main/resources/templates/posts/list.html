@@ -5,7 +5,18 @@
 </head>
 <body>
     <h1>Blog Posts</h1>
-    <a href="/posts/create">Tạo bài viết mới</a>
+
+    <!-- Các nút hành động -->
+    <div style="margin-bottom: 20px;">
+        <a href="/posts/create">
+            <button>Tạo bài viết mới</button>
+        </a>
+        <a href="/categories/create">
+            <button>Tạo chủ đề mới</button>
+        </a>
+    </div>
+
+    <!-- Danh sách bài viết -->
     <ul>
         <li th:each="post : ${posts}">
             <a th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.title}"></a>
