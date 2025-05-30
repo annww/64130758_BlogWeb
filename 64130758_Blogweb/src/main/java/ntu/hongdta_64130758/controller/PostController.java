@@ -22,46 +22,50 @@ import ntu.hongdta_64130758.models.Post;
 import ntu.hongdta_64130758.models.User;
 import ntu.hongdta_64130758.repositories.CategoryRepository;
 import ntu.hongdta_64130758.repositories.PostRepository;
-import ntu.hongdta_64130758.services.interf.ICategoryService;
-import ntu.hongdta_64130758.services.interf.ICommentService;
-import ntu.hongdta_64130758.services.interf.IPostService;
-import ntu.hongdta_64130758.services.interf.IUserService;
+import ntu.hongdta_64130758.services.implement.CategoryService;
+import ntu.hongdta_64130758.services.implement.CommentService;
+import ntu.hongdta_64130758.services.implement.PostService;
+import ntu.hongdta_64130758.services.implement.UserService;
 @Controller
 @RequestMapping("/posts")
 public class PostController {
 
     @Autowired
-    private IPostService postService;
+    private PostService postService;
 
     @Autowired
-    private ICommentService commentService;
+    private CommentService commentService;
     
     @Autowired
-    private IUserService userService;
+    private UserService userService;
     
     @Autowired
-    private ICategoryService categoryService;
+    private CategoryService categoryService;
     
     @Autowired
     private PostRepository postRepository;
     
-    @GetMapping
-    public String showPostList(@RequestParam(value = "sort", required = false) String sort,Model model) {
-        List<Post> posts = postService.getAllPosts();
-        if ("newest".equals(sort)) {
-            posts = postRepository.findAllByOrderByCreatedAtDesc();
-        } else if ("oldest".equals(sort)) {
-            posts = postRepository.findAllByOrderByCreatedAtAsc();
-        } else if ("alphabet_asc".equals(sort)) {
-            posts = postRepository.findAllByOrderByTitleAsc();
-        } else if ("alphabet_desc".equals(sort)) {
-            posts = postRepository.findAllByOrderByTitleDesc();
-        } else {
-            posts = postService.getAllPosts();
+    @GetMapping("")
+    public String showPostList(
+        @RequestParam(required = false) String keyword,
+        @RequestParam(required = false) Long categoryId,
+        @RequestParam(required = false) String sort,
+        Model model) {
+
+        if (sort == null) {
+            sort = ""; 
         }
+
+        List<Post> posts = postService.findAllPostsSorted(keyword, categoryId, sort);
+
         model.addAttribute("posts", posts);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("sort", sort);
+        model.addAttribute("categories", categoryService.getAllCategories());	
         return "posts/index"; 
     }
+
     @GetMapping("/{id}")
     public String showPostDetail(@PathVariable Long id, Model model) {
         Post post = postService.findById(id);
@@ -121,19 +125,11 @@ public class PostController {
         return "redirect:/posts";
     }
     
-//    @PostMapping("/posts")
-//    public String savePost(@ModelAttribute Post post, Principal principal) {
-//        User author = userService.findByUsername(principal.getName()); 
-//        post.setAuthor(author);
-//        post.setCreatedAt(LocalDateTime.now());
-//        postService.savePost(post);
-//        return "redirect:/posts";
-//    }
-    
     @GetMapping("/search")
     public String searchPosts(@RequestParam("keyword") String keyword, Model model) {
         List<Post> searchResults = postRepository.findByTitleContainingIgnoreCase(keyword);
         model.addAttribute("posts", searchResults);
         return "posts/index";
     }
+    
 }
