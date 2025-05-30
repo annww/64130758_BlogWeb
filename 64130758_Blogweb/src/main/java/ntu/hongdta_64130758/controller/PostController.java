@@ -132,4 +132,14 @@ public class PostController {
         return "posts/index";
     }
     
+    @GetMapping("/categories/{id}/posts")
+    public String showPostsByCategory(@PathVariable("id") Long id, Model model) {
+        List<Post> posts = postService.findByCategoryId(id);
+        model.addAttribute("posts", posts);
+        model.addAttribute("categoryId", id);
+        model.addAttribute("categories", categoryService.getAllCategories()); // Để dropdown hiển thị đúng
+        return "posts/index";
+    }
+
+
 }

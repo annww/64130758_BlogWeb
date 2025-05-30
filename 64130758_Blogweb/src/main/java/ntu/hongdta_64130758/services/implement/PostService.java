@@ -124,4 +124,9 @@ public class PostService implements IPostService {
                     .sorted(comparator)
                     .collect(Collectors.toList());
     }
+    
+    public List<Post> findByCategoryId(Long categoryId) {
+        return postRepository.findByCategoryId(categoryId);
+    }
+
 }
