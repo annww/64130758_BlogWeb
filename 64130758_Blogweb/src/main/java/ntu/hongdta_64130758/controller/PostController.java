@@ -137,7 +137,7 @@ public class PostController {
         List<Post> posts = postService.findByCategoryId(id);
         model.addAttribute("posts", posts);
         model.addAttribute("categoryId", id);
-        model.addAttribute("categories", categoryService.getAllCategories()); // Để dropdown hiển thị đúng
+        model.addAttribute("categories", categoryService.getAllCategories()); 
         return "posts/index";
     }
 

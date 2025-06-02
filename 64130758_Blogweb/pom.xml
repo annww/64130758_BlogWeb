@@ -78,7 +78,7 @@
 		</dependency>
 		<dependency>
 		    <groupId>org.thymeleaf.extras</groupId>
-		    <artifactId>thymeleaf-extras-springsecurity6</artifactId> <!-- hoặc 5 nếu bạn dùng Spring Security 5 -->
+		    <artifactId>thymeleaf-extras-springsecurity6</artifactId> 
 		</dependency>
 
 	</dependencies>
