@@ -129,4 +129,9 @@ public class PostService implements IPostService {
         return postRepository.findByCategoryId(categoryId);
     }
 
+    @Override
+    public void deletePostById(Long id) {
+        postRepository.deleteById(id);
+    }
+
 }

@@ -27,7 +27,8 @@
           </li>
         </ul>
         <span class="navbar-text text-light">
-		    👤 <span th:text="${full_name}">Tên người dùng</span>
+		    👤 <span sec:authorize="isAuthenticated()" sec:authentication="principal.fullName">Tên người dùng</span>
+
 		  </span>
 		<div sec:authorize="isAuthenticated()">
 		  <form th:action="@{/logout}" method="post" class="d-inline">

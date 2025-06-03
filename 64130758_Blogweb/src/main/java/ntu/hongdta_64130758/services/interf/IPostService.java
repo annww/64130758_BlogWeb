@@ -9,4 +9,5 @@ public interface IPostService {
     Post getPostById(Long id);
     Post savePost(Post post);
     Post findById(Long id);
+    void deletePostById(Long id);
 }

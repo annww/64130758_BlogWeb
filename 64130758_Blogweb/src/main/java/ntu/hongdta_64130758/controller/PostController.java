@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.servlet.http.HttpServletRequest;
 import ntu.hongdta_64130758.models.Comment;
 import ntu.hongdta_64130758.models.Post;
 import ntu.hongdta_64130758.models.User;
@@ -26,6 +27,8 @@ import ntu.hongdta_64130758.services.implement.CategoryService;
 import ntu.hongdta_64130758.services.implement.CommentService;
 import ntu.hongdta_64130758.services.implement.PostService;
 import ntu.hongdta_64130758.services.implement.UserService;
+import org.springframework.security.web.csrf.CsrfToken;
+
 @Controller
 @RequestMapping("/posts")
 public class PostController {
@@ -67,13 +70,95 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public String showPostDetail(@PathVariable Long id, Model model) {
+    public String showPostDetail(@PathVariable Long id, 
+                                 Model model, 
+                                 @AuthenticationPrincipal UserDetails userDetails) {
         Post post = postService.findById(id);
         List<Comment> comments = commentService.getCommentsByPostId(id);
+
         model.addAttribute("post", post);
         model.addAttribute("comments", comments);
+
+        if (userDetails != null) {
+            User currentUser = userService.findByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
+        }
+
         return "posts/detail"; 
     }
+    
+    @GetMapping("/edit/{id}")
+    public String showEditPostForm(@PathVariable Long id, Model model) {
+        Post post = postService.findById(id);
+        if (post == null) {
+            return "redirect:/posts";
+        }
+
+        model.addAttribute("post", post);
+        model.addAttribute("categories", categoryService.getAllCategories());
+        return "posts/edit";
+    }
+
+
+    @PostMapping("/edit/{id}")
+    public String updatePost(@PathVariable Long id, 
+                             @ModelAttribute("post") Post updatedPost,
+                             @AuthenticationPrincipal UserDetails userDetails) {
+        Post existingPost = postService.findById(id);
+        User currentUser = userService.findByUsername(userDetails.getUsername());
+
+        if (!existingPost.getAuthor().getId().equals(currentUser.getId())) {
+            return "redirect:/posts/" + id;
+        }
+
+        existingPost.setTitle(updatedPost.getTitle());
+        existingPost.setContent(updatedPost.getContent());
+        existingPost.setCategory(updatedPost.getCategory());
+
+        postService.savePost(existingPost);
+        return "redirect:/posts/" + id;
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deletePost(@PathVariable Long id, 
+                             @AuthenticationPrincipal UserDetails userDetails) {
+        Post post = postService.findById(id);
+        User currentUser = userService.findByUsername(userDetails.getUsername());
+
+        if (!post.getAuthor().getId().equals(currentUser.getId())) {
+            return "redirect:/posts/" + id;
+        }
+
+        postService.deletePostById(id);
+        return "redirect:/posts";
+    }
+    
+    @PostMapping("/update/{id}")
+    public String updatePost(@PathVariable Long id,
+                             @ModelAttribute("post") Post updatedPost,
+                             @AuthenticationPrincipal UserDetails userDetails,
+                             RedirectAttributes redirectAttributes) {
+        Post existingPost = postService.findById(id);
+        if (existingPost == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Bài viết không tồn tại.");
+            return "redirect:/posts";
+        }
+
+        if (!existingPost.getAuthor().getUsername().equals(userDetails.getUsername())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Bạn không có quyền sửa bài viết này.");
+            return "redirect:/posts";
+        }
+
+        existingPost.setTitle(updatedPost.getTitle());
+        existingPost.setContent(updatedPost.getContent());
+        existingPost.setCategory(updatedPost.getCategory());
+        postService.savePost(existingPost);
+
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật bài viết thành công!");
+        return "redirect:/posts/" + id;
+    }
+
+
 
     @PostMapping("/{id}/comments")
     public String addComment(@PathVariable Long id, 
@@ -106,13 +191,15 @@ public class PostController {
         return "redirect:/posts/" + comment.getPost().getId(); 
     }
 
- 	
     @GetMapping("/create")
-    public String showCreatePostForm(Model model) {
-    	model.addAttribute("post", new Post()); 
+    public String showCreatePostForm(Model model, HttpServletRequest request) {
+        model.addAttribute("post", new Post());
         model.addAttribute("categories", categoryService.getAllCategories());
-        return "posts/create"; 
+        return "posts/create";
     }
+
+
+
 
     @PostMapping("/create")
     public String createPost(@ModelAttribute("post") Post post,
@@ -124,7 +211,7 @@ public class PostController {
         redirectAttributes.addFlashAttribute("successMessage", "Tạo bài viết thành công!");
         return "redirect:/posts";
     }
-    
+
     @GetMapping("/search")
     public String searchPosts(@RequestParam("keyword") String keyword, Model model) {
         List<Post> searchResults = postRepository.findByTitleContainingIgnoreCase(keyword);
