@@ -208,12 +208,15 @@ public class PostController {
     }
 
     @GetMapping("/create")
-    public String showCreatePostForm(Model model, HttpServletRequest request) {
-        model.addAttribute("post", new Post());
+    public String showCreatePostForm(Model model) {
+        if (!model.containsAttribute("post")) {
+            model.addAttribute("post", new Post());
+        }
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("category", new Category());
         return "posts/create";
     }
+
 
     @PostMapping("/create")
     public String createPost(@ModelAttribute("post") Post post,

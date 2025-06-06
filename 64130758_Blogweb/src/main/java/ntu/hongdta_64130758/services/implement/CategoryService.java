@@ -22,6 +22,9 @@ public class CategoryService implements ICategoryService {
     @Autowired
     private CommentService commentService;
 
+    public boolean existsByName(String name) {
+        return categoryRepository.existsByName(name);
+    }
     @Override
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
