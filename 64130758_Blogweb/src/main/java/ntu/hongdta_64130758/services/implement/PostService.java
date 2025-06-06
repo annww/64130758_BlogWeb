@@ -133,5 +133,4 @@ public class PostService implements IPostService {
     public void deletePostById(Long id) {
         postRepository.deleteById(id);
     }
-
 }

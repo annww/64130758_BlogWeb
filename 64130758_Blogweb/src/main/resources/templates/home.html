@@ -10,15 +10,17 @@
 </head>
 <body>
 <div th:replace="~{admin :: header}"></div>
-<div class="image_banner"><img th:src="@{/img/tomato.jpg}"> </div>
 <div class="content">
-	<h1>Danh sách danh mục</h1>
-	    <ul>
-		    <li th:each="cat : ${categories}">
-		        <a th:href="@{/posts(categoryId=${cat.id})}" th:text="${cat.name}"></a>
+  <h1>Danh sách danh mục</h1>
+  
+  <ul>
+    <li th:each="cat : ${categories}">
+      <a th:href="@{/posts(categoryId=${cat.id})}" th:text="${cat.name}"></a>
+    </li>
+  </ul>
 
-		    </li>
-		</ul>
+<a th:href="@{/categories/manage}" class="btn btn-primary mt-3">Chỉnh sửa danh mục</a>
+
 </div>
 </body>
 </html>

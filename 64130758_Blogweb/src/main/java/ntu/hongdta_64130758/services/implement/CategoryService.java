@@ -29,4 +29,29 @@ public class CategoryService implements ICategoryService {
         return null;
     }
 
+    @Override
+    public List<Category> findAll() {
+        return categoryRepository.findAll();
+    }
+
+    @Override
+    public Category findById(Long id) {
+        return categoryRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void update(Category category) {
+        categoryRepository.save(category);
+    }
+
+    @Override
+    public void updateAll(List<Category> categories) {
+        categoryRepository.saveAll(categories);
+    }
+    
+    @Override
+    public Category save(Category category) {
+        return categoryRepository.save(category);
+    }
+	
 }

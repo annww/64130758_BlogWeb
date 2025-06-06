@@ -1,7 +1,5 @@
 package ntu.hongdta_64130758.controller;
 
-import java.security.Principal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +16,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
+import ntu.hongdta_64130758.models.Category;
 import ntu.hongdta_64130758.models.Comment;
 import ntu.hongdta_64130758.models.Post;
 import ntu.hongdta_64130758.models.User;
-import ntu.hongdta_64130758.repositories.CategoryRepository;
 import ntu.hongdta_64130758.repositories.PostRepository;
 import ntu.hongdta_64130758.services.implement.CategoryService;
 import ntu.hongdta_64130758.services.implement.CommentService;
 import ntu.hongdta_64130758.services.implement.PostService;
 import ntu.hongdta_64130758.services.implement.UserService;
-import org.springframework.security.web.csrf.CsrfToken;
 
 @Controller
 @RequestMapping("/posts")
@@ -74,18 +71,20 @@ public class PostController {
                                  Model model, 
                                  @AuthenticationPrincipal UserDetails userDetails) {
         Post post = postService.findById(id);
-        List<Comment> comments = commentService.getCommentsByPostId(id);
+
+        List<Comment> parentComments = commentService.getParentCommentsByPostId(id);
 
         model.addAttribute("post", post);
-        model.addAttribute("comments", comments);
+        model.addAttribute("comments", parentComments);
 
         if (userDetails != null) {
             User currentUser = userService.findByUsername(userDetails.getUsername());
             model.addAttribute("currentUser", currentUser);
         }
 
-        return "posts/detail"; 
+        return "posts/detail";
     }
+
     
     @GetMapping("/edit/{id}")
     public String showEditPostForm(@PathVariable Long id, Model model) {
@@ -191,15 +190,31 @@ public class PostController {
         return "redirect:/posts/" + comment.getPost().getId(); 
     }
 
+    @PostMapping("/{postId}/comments/{commentId}/reply")
+    public String replyComment(@PathVariable Long postId,
+                               @PathVariable Long commentId,
+                               @RequestParam String content,
+                               @AuthenticationPrincipal UserDetails userDetails) {
+        Post post = postService.findById(postId);
+        Comment parentComment = commentService.findById(commentId);
+        User user = userService.findByUsername(userDetails.getUsername());
+
+        Comment reply = new Comment();
+        reply.setContent(content);
+        reply.setUser(user);
+        reply.setPost(post);
+        reply.setParent(parentComment);  
+        commentService.saveComment(reply);
+
+        return "redirect:/posts/" + postId;
+    }
+
     @GetMapping("/create")
     public String showCreatePostForm(Model model, HttpServletRequest request) {
         model.addAttribute("post", new Post());
         model.addAttribute("categories", categoryService.getAllCategories());
         return "posts/create";
     }
-
-
-
 
     @PostMapping("/create")
     public String createPost(@ModelAttribute("post") Post post,
@@ -226,7 +241,5 @@ public class PostController {
         model.addAttribute("categoryId", id);
         model.addAttribute("categories", categoryService.getAllCategories()); 
         return "posts/index";
-    }
-
-
+    } 
 }

@@ -8,9 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+<div th:replace="~{admin :: header}"></div>
 <div class="container py-5">
-
-    <!-- Chi tiết bài viết -->
     <div class="mb-5">
         <h1 class="mb-3" th:text="${post.title}">Tiêu đề bài viết</h1>
         <div class="border rounded p-3 bg-light" th:utext="${post.content}">
@@ -18,8 +17,14 @@
         </div>
         <a class="btn btn-secondary mt-3" th:href="@{/posts}">← Quay lại danh sách</a>
     </div>
+                <div th:if="${#authentication.name == post.author.username}" class="mt-3">
+                    <a th:href="@{'/posts/edit/' + ${post.id}}" class="btn btn-primary">Chỉnh sửa</a>
 
-    <!-- Danh sách bình luận -->
+                    <form th:action="@{'/posts/delete/' + ${post.id}}" method="post" style="display:inline;" 
+                          onsubmit="return confirm('Bạn có chắc muốn xóa bài viết này?');">
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                    </form>
+                </div>
     <div class="mb-4">
         <h3>Bình luận</h3>
         <ul class="list-group">
@@ -28,39 +33,85 @@
                 <small class="text-muted">
                     bởi <span th:text="${comment.user.fullName}">Tên người dùng</span>
                 </small>
+         
+
+                <!-- Nút Xóa nếu là chủ bình luận -->
                 <form th:if="${#authentication.name == comment.user.username}"
                       th:action="@{'/posts/comments/' + ${comment.id} + '/delete'}"
-                      method="post" class="mt-2">
-                    <div sec:authorize="isAuthenticated()">
-                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                    </div>
+                      method="post" class="mt-2 d-inline">
                     <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
                 </form>
+
+                <!-- Nút Trả lời -->
+                <button class="btn btn-sm btn-outline-primary mt-2" type="button"
+                        th:onclick="'toggleReplyForm(' + ${comment.id} + ')'">
+                    ↩️ Trả lời
+                </button>
+
+                <!-- Form Trả lời (ẩn/hiện) -->
+                <div th:id="'reply-form-' + ${comment.id}" class="mt-2" style="display: none;">
+                    <form th:action="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/reply'}" method="post">
+                        <textarea name="content" class="form-control mb-2" rows="2" placeholder="Nhập phản hồi..." required></textarea>
+                        <button type="submit" class="btn btn-sm btn-success">Gửi trả lời</button>
+                    </form>
+                </div>
+
+                <!-- Hiển thị comment con (reply) đệ quy -->
+                <ul class="list-group mt-3 ms-4" th:if="${comment.replies != null}">
+                    <li th:each="reply : ${comment.replies}" class="list-group-item">
+                        <p class="mb-1" th:text="${reply.content}">Nội dung trả lời</p>
+                        <small class="text-muted">
+                            bởi <span th:text="${reply.user.fullName}">Tên người dùng</span>
+                        </small>
+
+                        <!-- Nút Xóa nếu là chủ bình luận con -->
+                        <form th:if="${#authentication.name == reply.user.username}"
+                              th:action="@{'/posts/comments/' + ${reply.id} + '/delete'}"
+                              method="post" class="mt-2 d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                        </form>
+
+                        <!-- Nút Trả lời cho bình luận con -->
+                        <button class="btn btn-sm btn-outline-primary mt-2" type="button"
+                                th:onclick="'toggleReplyForm(' + ${reply.id} + ')'">
+                            ↩️ Trả lời
+                        </button>
+
+                        <!-- Form Trả lời (ẩn/hiện) -->
+                        <div th:id="'reply-form-' + ${reply.id}" class="mt-2" style="display: none;">
+                            <form th:action="@{'/posts/' + ${post.id} + '/comments/' + ${reply.id} + '/reply'}" method="post">
+                                <textarea name="content" class="form-control mb-2" rows="2" placeholder="Nhập phản hồi..." required></textarea>
+                                <button type="submit" class="btn btn-sm btn-success">Gửi trả lời</button>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
             </li>
         </ul>
     </div>
-	<div th:if="${currentUser != null and currentUser.id == post.author.id}" class="mb-3">
-	    <a th:href="@{/posts/edit/{id}(id=${post.id})}" class="btn btn-warning">✏️ Chỉnh sửa</a>
-	    <form th:action="@{/posts/delete/{id}(id=${post.id})}" method="post" class="d-inline">
-	        <button type="submit" class="btn btn-danger">🗑️ Xóa</button>
-	    </form>
-	</div>
 
-    <!-- Form thêm bình luận -->
+    <!-- Form thêm bình luận mới -->
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">Thêm bình luận mới</h5>
             <form th:action="@{/posts/{id}/comments(id=${post.id})}" method="post">
-                <div class="mb-3">
-                    <textarea name="content" class="form-control" rows="3" placeholder="Viết bình luận..." required></textarea>
-                </div>
-                <div sec:authorize="isAuthenticated()">
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                </div>
+                <textarea name="content" class="form-control mb-3" rows="3" placeholder="Viết bình luận..." required></textarea>
                 <button type="submit" class="btn btn-primary">Gửi bình luận</button>
             </form>
         </div>
     </div>
+
+    <!-- Script để ẩn/hiện form trả lời -->
+    <script>
+        function toggleReplyForm(commentId) {
+            const form = document.getElementById('reply-form-' + commentId);
+            if (form.style.display === 'none') {
+                form.style.display = 'block';
+            } else {
+                form.style.display = 'none';
+            }
+        }
+    </script>
 
 </div>
 </body>

@@ -18,19 +18,12 @@
    style="bottom: 30px; right: 30px; z-index: 999;">
   <i class="bi bi-plus-lg"></i>
 </a>
-
-
-
 <div class="container mt-4">
   <h1 class="mb-3">Danh sách bài viết</h1>
-
   <form class="row g-3 mb-4" method="get" th:action="@{/posts}">
-    <!-- Từ khóa -->
     <div class="col-md-4">
       <input class="form-control" type="text" name="keyword" placeholder="Tìm kiếm..." th:value="${keyword}">
     </div>
-
-    <!-- Dropdown Chủ đề -->
     <div class="col-md-3">
       <select class="form-select" name="categoryId">
         <option value="">-- Tất cả chuyên mục --</option>
@@ -41,8 +34,6 @@
         </option>
       </select>
     </div>
-
-    <!-- Sort -->
     <div class="col-md-3">
       <select class="form-select" name="sort">
         <option value="">-- Sắp xếp --</option>
@@ -52,18 +43,14 @@
         <option value="alphabet_desc" th:selected="${sort == 'alphabet_desc'}">Z → A</option>
       </select>
     </div>
-
     <div class="col-md-2 d-flex">
       <button class="btn btn-primary w-100 me-2" type="submit">Lọc</button>
       <a class="btn btn-secondary" th:href="@{/posts}">Reset</a>
     </div>
   </form>
-
-  <!-- Danh sách bài viết -->
   <div th:if="${posts.size() == 0}">
     <p>Không tìm thấy bài viết nào.</p>
   </div>
-
   <div th:each="post : ${posts}" class="card mb-3">
     <div class="card-body">
       <h5 class="card-title">

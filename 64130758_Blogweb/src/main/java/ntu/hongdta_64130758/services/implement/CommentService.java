@@ -22,10 +22,13 @@ public class CommentService implements ICommentService {
     }
 
     @Override
-    public void saveComment(Comment comment) {
-        comment.setCreatedAt(LocalDateTime.now());
-        commentRepository.save(comment);
+    public Comment saveComment(Comment comment) {
+        if (comment.getCreatedAt() == null) {
+            comment.setCreatedAt(LocalDateTime.now());
+        }
+        return commentRepository.save(comment);
     }
+
     @Override
     public Comment findById(Long id) {
         return commentRepository.findById(id).orElse(null);
@@ -36,4 +39,14 @@ public class CommentService implements ICommentService {
         commentRepository.deleteById(id);
     }
 
+    @Override
+    public Comment getCommentById(Long id) {
+        return commentRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy bình luận với ID: " + id));
+    }
+
+    @Override
+    public List<Comment> getParentCommentsByPostId(Long postId) {
+        return commentRepository.findByPostIdAndParentIsNull(postId);
+    }
 }

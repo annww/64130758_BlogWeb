@@ -10,113 +10,106 @@
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
 </head>
 <body class="p-4">
+<div th:replace="~{admin :: header}"></div>
+<div class="container">
+    <h1 class="mb-4">Thêm bài viết mới</h1>
 
-    <div class="container">
-        <h1 class="mb-4">Thêm bài viết mới</h1>
+    <form th:action="@{/posts/create}" method="post" th:object="${post}">
+        <div class="mb-3">
+            <input type="text" class="form-control" th:field="*{title}" placeholder="Tiêu đề" required />
+        </div>
+        <div class="mb-3">
+            <textarea class="form-control" id="detail" th:field="*{content}" placeholder="Nội dung" rows="10"></textarea>
 
-        <form th:action="@{/posts/create}" method="post" th:object="${post}">
-            <div class="mb-3">
-                <input type="text" class="form-control" th:field="*{title}" placeholder="Tiêu đề" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Chọn chuyên mục:</label>
+            <div class="d-flex align-items-center gap-2">
+                <select class="form-select" th:field="*{category.id}" required>
+	    <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+	</select>
+
+
+                <button type="button" class="btn btn-outline-primary" onclick="openCategoryModal()">
+                    <i class='bx bx-plus'></i>
+                </button>
             </div>
-            <div class="mb-3">
-                <textarea class="form-control" id="detail" th:field="*{content}" placeholder="Nội dung" rows="10"></textarea>
+        </div>
 
-            </div>
+        <button type="submit" class="btn btn-success">Tạo bài viết</button>
+    </form>
+</div>
+<div id="categoryModal" class="position-fixed top-50 start-50 translate-middle bg-white border rounded p-4 shadow"
+     style="display:none; z-index:1000; min-width: 300px;">
+    <h5 class="mb-3">Thêm chuyên mục mới</h5>
+    <form action="/categories/create" method="post"> 
+        <input type="text" class="form-control mb-3" name="newCategoryName" id="newCategoryName" placeholder="Tên chuyên mục" />
+        <div class="d-flex justify-content-end gap-2">
+            <button type="submit" class="btn btn-primary" onclick="submitNewCategory()">Lưu</button>
+            <button type="button" class="btn btn-secondary" onclick="closeCategoryModal()">Hủy</button>
+        </div>
+    </form>
+</div>
+<div th:if="${successMessage}" class="alert alert-success" role="alert">
+    <span th:text="${successMessage}"></span>
+</div>
+<div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:999;"></div>
+<script th:src="@{/js/tinymce/tinymce.min.js}" referrerpolicy="origin"></script>
+<script>
+  window.onload = function() {
+    tinymce.init({
+      selector: 'textarea#detail',
+      width: '100%',
+      height: 500,
+      plugins: [
+        'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media',
+        'searchreplace', 'table', 'visualblocks', 'wordcount',
+        'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker',
+        'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage',
+        'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags',
+        'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword', 'exportpdf'
+      ],
+      toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat | image',
+      images_upload_url: '/upload-image',
+      automatic_uploads: true,
+      mergetags_list: [
+        { value: 'First.Name', title: 'First Name' },
+        { value: 'Email', title: 'Email' }
+      ],
+      images_upload_handler: function (blobInfo, success, failure) {
+        const formData = new FormData();
+        formData.append('file', blobInfo.blob(), blobInfo.filename());
 
-            <div class="mb-3">
-                <label class="form-label">Chọn chuyên mục:</label>
-                <div class="d-flex align-items-center gap-2">
-                    <select class="form-select" th:field="*{category.id}" required>
-					    <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
-					</select>
-
-
-                    <button type="button" class="btn btn-outline-primary" onclick="openCategoryModal()">
-                        <i class='bx bx-plus'></i>
-                    </button>
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-success">Tạo bài viết</button>
-        </form>
-    </div>
-
-    <!-- Modal chuyên mục -->
-    <div id="categoryModal" class="position-fixed top-50 start-50 translate-middle bg-white border rounded p-4 shadow"
-         style="display:none; z-index:1000; min-width: 300px;">
-        <h5 class="mb-3">Thêm chuyên mục mới</h5>
-        <form action="/categories/create" method="post"> 
-            <input type="text" class="form-control mb-3" name="newCategoryName" id="newCategoryName" placeholder="Tên chuyên mục" />
-            <div class="d-flex justify-content-end gap-2">
-                <button type="submit" class="btn btn-primary" onclick="submitNewCategory()">Lưu</button>
-                <button type="button" class="btn btn-secondary" onclick="closeCategoryModal()">Hủy</button>
-            </div>
-        </form>
-    </div>
-
-    <div th:if="${successMessage}" class="alert alert-success" role="alert">
-        <span th:text="${successMessage}"></span>
-    </div>
-
-    <div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:999;"></div>
-
-    <script th:src="@{/js/tinymce/tinymce.min.js}" referrerpolicy="origin"></script>
-
-    <script>
-      // Khởi tạo TinyMCE sau khi DOM load xong
-      window.onload = function() {
-        tinymce.init({
-          selector: 'textarea#detail',
-          width: '100%',
-          height: 500,
-          plugins: [
-            'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media',
-            'searchreplace', 'table', 'visualblocks', 'wordcount',
-            'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker',
-            'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage',
-            'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags',
-            'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword', 'exportpdf'
-          ],
-          toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat | image',
-          images_upload_url: '/upload-image',
-          automatic_uploads: true,
-          mergetags_list: [
-            { value: 'First.Name', title: 'First Name' },
-            { value: 'Email', title: 'Email' }
-          ],
-          images_upload_handler: function (blobInfo, success, failure) {
-            const formData = new FormData();
-            formData.append('file', blobInfo.blob(), blobInfo.filename());
-
-            fetch('/upload-image', {
-              method: 'POST',
-              body: formData
-            })
-            .then(response => response.json())
-            .then(result => {
-              success(result.location);
-            })
-            .catch(() => {
-              failure('Upload failed');
-            });
-          }
+        fetch('/upload-image', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(result => {
+          success(result.location);
+        })
+        .catch(() => {
+          failure('Upload failed');
         });
-      };
-	
-      
-      function openCategoryModal() {
-          document.getElementById('categoryModal').style.display = 'block';
-          document.getElementById('modalOverlay').style.display = 'block';
       }
+    });
+  };
 
-      function closeCategoryModal() {
-          document.getElementById('categoryModal').style.display = 'none';
-          document.getElementById('modalOverlay').style.display = 'none';
-      }
-      
-      document.querySelector('form').addEventListener('submit', function(e) {
-          tinymce.triggerSave();
-      }); 	 	
-    </script>
+  
+  function openCategoryModal() {
+      document.getElementById('categoryModal').style.display = 'block';
+      document.getElementById('modalOverlay').style.display = 'block';
+  }
+
+  function closeCategoryModal() {
+      document.getElementById('categoryModal').style.display = 'none';
+      document.getElementById('modalOverlay').style.display = 'none';
+  }
+  
+  document.querySelector('form').addEventListener('submit', function(e) {
+      tinymce.triggerSave();
+  }); 	 	
+</script>
 </body>
 </html>
