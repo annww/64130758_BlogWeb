@@ -33,22 +33,18 @@
                 <small class="text-muted">
                     bởi <span th:text="${comment.user.fullName}">Tên người dùng</span>
                 </small>
-         
-
-                <!-- Nút Xóa nếu là chủ bình luận -->
+      
                 <form th:if="${#authentication.name == comment.user.username}"
                       th:action="@{'/posts/comments/' + ${comment.id} + '/delete'}"
                       method="post" class="mt-2 d-inline">
                     <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
                 </form>
 
-                <!-- Nút Trả lời -->
                 <button class="btn btn-sm btn-outline-primary mt-2" type="button"
                         th:onclick="'toggleReplyForm(' + ${comment.id} + ')'">
                     ↩️ Trả lời
                 </button>
 
-                <!-- Form Trả lời (ẩn/hiện) -->
                 <div th:id="'reply-form-' + ${comment.id}" class="mt-2" style="display: none;">
                     <form th:action="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/reply'}" method="post">
                         <textarea name="content" class="form-control mb-2" rows="2" placeholder="Nhập phản hồi..." required></textarea>
@@ -56,7 +52,6 @@
                     </form>
                 </div>
 
-                <!-- Hiển thị comment con (reply) đệ quy -->
                 <ul class="list-group mt-3 ms-4" th:if="${comment.replies != null}">
                     <li th:each="reply : ${comment.replies}" class="list-group-item">
                         <p class="mb-1" th:text="${reply.content}">Nội dung trả lời</p>
@@ -64,20 +59,17 @@
                             bởi <span th:text="${reply.user.fullName}">Tên người dùng</span>
                         </small>
 
-                        <!-- Nút Xóa nếu là chủ bình luận con -->
                         <form th:if="${#authentication.name == reply.user.username}"
                               th:action="@{'/posts/comments/' + ${reply.id} + '/delete'}"
                               method="post" class="mt-2 d-inline">
                             <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
                         </form>
 
-                        <!-- Nút Trả lời cho bình luận con -->
                         <button class="btn btn-sm btn-outline-primary mt-2" type="button"
                                 th:onclick="'toggleReplyForm(' + ${reply.id} + ')'">
                             ↩️ Trả lời
                         </button>
 
-                        <!-- Form Trả lời (ẩn/hiện) -->
                         <div th:id="'reply-form-' + ${reply.id}" class="mt-2" style="display: none;">
                             <form th:action="@{'/posts/' + ${post.id} + '/comments/' + ${reply.id} + '/reply'}" method="post">
                                 <textarea name="content" class="form-control mb-2" rows="2" placeholder="Nhập phản hồi..." required></textarea>
@@ -90,7 +82,6 @@
         </ul>
     </div>
 
-    <!-- Form thêm bình luận mới -->
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">Thêm bình luận mới</h5>
@@ -101,7 +92,6 @@
         </div>
     </div>
 
-    <!-- Script để ẩn/hiện form trả lời -->
     <script>
         function toggleReplyForm(commentId) {
             const form = document.getElementById('reply-form-' + commentId);

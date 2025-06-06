@@ -45,25 +45,23 @@ public class PostController {
     @Autowired
     private PostRepository postRepository;
     
-    @GetMapping("")
-    public String showPostList(
-        @RequestParam(required = false) String keyword,
-        @RequestParam(required = false) Long categoryId,
-        @RequestParam(required = false) String sort,
-        Model model) {
+    @GetMapping
+    public String listPosts(@RequestParam(required = false) String keyword,
+                            @RequestParam(required = false) Long categoryId,
+                            @RequestParam(required = false) String sort,
+                            @RequestParam(required = false) Long authorId,
+                            Model model) {
 
-        if (sort == null) {
-            sort = ""; 
-        }
-
-        List<Post> posts = postService.findAllPostsSorted(keyword, categoryId, sort);
+        List<Post> posts = postService.findAllPostsSorted(keyword, categoryId, sort, authorId);
 
         model.addAttribute("posts", posts);
         model.addAttribute("keyword", keyword);
         model.addAttribute("categoryId", categoryId);
+        model.addAttribute("authorId", authorId);
         model.addAttribute("sort", sort);
-        model.addAttribute("categories", categoryService.getAllCategories());	
-        return "posts/index"; 
+        model.addAttribute("authors", userService.getAllUsers());  
+        model.addAttribute("categories", categoryService.getAllCategories());
+        return "posts/index";
     }
 
     @GetMapping("/{id}")
@@ -244,4 +242,5 @@ public class PostController {
         model.addAttribute("categories", categoryService.getAllCategories()); 
         return "posts/index";
     } 
+    
 }

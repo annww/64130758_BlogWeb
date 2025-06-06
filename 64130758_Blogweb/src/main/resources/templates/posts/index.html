@@ -25,6 +25,17 @@
       <input class="form-control" type="text" name="keyword" placeholder="Tìm kiếm..." th:value="${keyword}">
     </div>
     <div class="col-md-3">
+  <select class="form-select" name="authorId">
+    <option value="">-- Tất cả tác giả --</option>
+    <option th:each="author : ${authors}"
+            th:value="${author.id}"
+            th:text="${author.fullName}"
+            th:selected="${author.id == authorId}">
+    </option>
+  </select>
+</div>
+    
+    <div class="col-md-3">
       <select class="form-select" name="categoryId">
         <option value="">-- Tất cả chuyên mục --</option>
         <option th:each="cat : ${categories}"

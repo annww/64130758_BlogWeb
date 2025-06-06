@@ -13,12 +13,8 @@
 <div th:replace="~{admin :: header}"></div>
 <div class="container mt-4">
     <h1>Thêm bài viết mới</h1>
-
-    <!-- Hiện thông báo lỗi hoặc thành công thêm danh mục -->
     <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
     <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-
-    <!-- Form tạo bài viết -->
     <form th:action="@{/posts/create}" method="post" th:object="${post}">
         <div class="mb-3">
             <input type="text" class="form-control" th:field="*{title}" placeholder="Tiêu đề" required />
@@ -40,8 +36,6 @@
 		        </a>
 		    </div>
 		</div>
-
-
         <button type="submit" class="btn btn-success">Lưu bài viết</button>
     </form>
 </div>

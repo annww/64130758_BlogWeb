@@ -47,38 +47,53 @@ public class PostService implements IPostService {
                 .orElseThrow(() -> new RuntimeException("Post not found with id " + id));
     }
     
-    public List<Post> findAllPostsSorted(String keyword, Long categoryId, String sort) {
-        List<Post> posts;
+    public List<Post> findAllPostsSorted(String keyword, Long categoryId, String sort, Long authorId) {
+        List<Post> posts = postRepository.findAll();
 
-        if (keyword != null && categoryId != null) {
-            posts = postRepository.findByTitleContainingAndCategoryId(keyword, categoryId);
-        } else if (keyword != null) {
-            posts = postRepository.findByTitleContaining(keyword);
-        } else if (categoryId != null) {
-            posts = postRepository.findByCategoryId(categoryId);
-        } else {
-            posts = postRepository.findAll();
+        if (categoryId != null) {
+            posts = posts.stream()
+                    .filter(p -> p.getCategory() != null && categoryId.equals(p.getCategory().getId()))
+                    .collect(Collectors.toList());
         }
 
-        switch (sort) {
+        if (keyword != null && !keyword.isBlank()) {
+            String lowerKeyword = keyword.toLowerCase();
+            posts = posts.stream()
+                    .filter(p -> {
+                        String title = p.getTitle() != null ? p.getTitle().toLowerCase() : "";
+                        String content = p.getContent() != null ? p.getContent().toLowerCase() : "";
+                        return title.contains(lowerKeyword) || content.contains(lowerKeyword);
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        if (authorId != null) {
+            posts = posts.stream()
+                    .filter(p -> p.getAuthor() != null && authorId.equals(p.getAuthor().getId()))
+                    .collect(Collectors.toList());
+        }
+
+        Comparator<Post> comparator;
+        switch (sort == null ? "" : sort) {
             case "newest":
-                posts.sort(Comparator.comparing(Post::getCreatedAt).reversed());
+                comparator = Comparator.comparing(Post::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed();
                 break;
             case "oldest":
-                posts.sort(Comparator.comparing(Post::getCreatedAt));
+                comparator = Comparator.comparing(Post::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder()));
                 break;
             case "alphabet_asc":
-                posts.sort(Comparator.comparing(Post::getTitle));
+                comparator = Comparator.comparing(Post::getTitle, Comparator.nullsLast(String::compareToIgnoreCase));
                 break;
             case "alphabet_desc":
-                posts.sort(Comparator.comparing(Post::getTitle).reversed());
+                comparator = Comparator.comparing(Post::getTitle, Comparator.nullsLast(String::compareToIgnoreCase)).reversed();
                 break;
             default:
-                posts.sort(Comparator.comparing(Post::getCreatedAt).reversed());
-                break;
+                comparator = Comparator.comparing(Post::getId);
         }
 
-        return posts;
+        return posts.stream()
+                .sorted(comparator)
+                .collect(Collectors.toList());
     }
 
     
@@ -133,4 +148,6 @@ public class PostService implements IPostService {
     public void deletePostById(Long id) {
         postRepository.deleteById(id);
     }
+    
+    
 }
