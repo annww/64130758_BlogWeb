@@ -49,4 +49,11 @@ public class CommentService implements ICommentService {
     public List<Comment> getParentCommentsByPostId(Long postId) {
         return commentRepository.findByPostIdAndParentIsNull(postId);
     }
+
+    public void deleteCommentsByPostId(Long postId) {
+        List<Comment> comments = commentRepository.findByPostId(postId);
+        for (Comment comment : comments) {
+            commentRepository.delete(comment);
+        }
+    }
 }

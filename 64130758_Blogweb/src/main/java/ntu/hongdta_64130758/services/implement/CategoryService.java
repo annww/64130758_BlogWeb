@@ -6,24 +6,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ntu.hongdta_64130758.models.Category;
+import ntu.hongdta_64130758.models.Post;
 import ntu.hongdta_64130758.repositories.CategoryRepository;
 import ntu.hongdta_64130758.services.interf.ICategoryService;
 
 @Service
 public class CategoryService implements ICategoryService {
 
-	@Autowired
+    @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private PostService postService;
+
+    @Autowired
+    private CommentService commentService;
 
     @Override
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
-    
+
+    @Override
+    public Category save(Category category) {
+        return categoryRepository.save(category);
+    }
+
     public Category saveCategory(String name) {
         if (!categoryRepository.existsByName(name)) {
-        	Category cat = new Category();
-        	cat.setName(name);
+            Category cat = new Category();
+            cat.setName(name);
             return categoryRepository.save(cat);
         }
         return null;
@@ -41,17 +53,30 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public void update(Category category) {
-        categoryRepository.save(category);
+        Category existing = categoryRepository.findById(category.getId()).orElse(null);
+        if (existing != null) {
+            existing.setName(category.getName());
+            existing.setDescription(category.getDescription());
+            categoryRepository.save(existing);
+        }
     }
 
     @Override
     public void updateAll(List<Category> categories) {
         categoryRepository.saveAll(categories);
     }
-    
-    @Override
-    public Category save(Category category) {
-        return categoryRepository.save(category);
+
+    public void deleteCategoryById(Long categoryId) {
+        List<Post> posts = postService.findByCategoryId(categoryId);
+
+        for (Post post : posts) {
+            commentService.deleteCommentsByPostId(post.getId()); 
+        }
+
+        for (Post post : posts) {
+            postService.deletePostById(post.getId());
+        }
+
+        categoryRepository.deleteById(categoryId);
     }
-	
 }

@@ -198,14 +198,12 @@ public class PostController {
         Post post = postService.findById(postId);
         Comment parentComment = commentService.findById(commentId);
         User user = userService.findByUsername(userDetails.getUsername());
-
         Comment reply = new Comment();
         reply.setContent(content);
         reply.setUser(user);
         reply.setPost(post);
         reply.setParent(parentComment);  
         commentService.saveComment(reply);
-
         return "redirect:/posts/" + postId;
     }
 
@@ -213,6 +211,7 @@ public class PostController {
     public String showCreatePostForm(Model model, HttpServletRequest request) {
         model.addAttribute("post", new Post());
         model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("category", new Category());
         return "posts/create";
     }
 
