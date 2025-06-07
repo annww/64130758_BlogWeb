@@ -32,6 +32,8 @@ body {
   font-weight: bold;
 }
 .navbar-text {
+  color: #30302A;
+  font-weight: 600;
   margin-right: 15px;
 }
 
@@ -42,11 +44,26 @@ body {
 .navbar .navbar-brand{
 	color: #606054;
 }
+button.btn-outline-light {
+  border-color: #606054;
+  color: #606054;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+button.btn-outline-light:hover {
+  background-color: #AF2C2C;
+  border-color: #AF2C2C;
+  color: white;
+}
 .navbar .navbar-brand:hover {
 	color: #30302A;
 }
-.navbar .nav-link {
-	color: #606054 !important;
+
+.navbar .nav-link{
+	color: #606054;	
+}
+.navbar .nav-link:hover {
+  color: #AF2C2C !important; /* đổi màu đỏ khi hover */
 }
 span{
   color: #606054;

@@ -25,6 +25,9 @@
           <li class="nav-item">
             <a class="nav-link" th:href="@{/posts}">📝 Blog</a>
           </li>
+          <li class="nav-item">
+			  <a class="nav-link" th:href="@{/users}">👤 Người dùng</a>
+			</li>
         </ul>
         <span class="navbar-text text-light">
 		    👤 <span sec:authorize="isAuthenticated()" sec:authentication="principal.fullName">Tên người dùng</span>

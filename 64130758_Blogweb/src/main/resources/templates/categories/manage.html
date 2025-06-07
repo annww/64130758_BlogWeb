@@ -1,98 +1,149 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
-    <title>Quản lý danh mục</title>
-    <link th:href="@{/css/admin.css}" rel="stylesheet" />
-    <link th:href="@{/css/home.css}" rel="stylesheet" />
-    <link th:href="@{/css/index.css}" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <title>Quản lý danh mục</title>
+  <link th:href="@{/css/admin.css}" rel="stylesheet" />
+  <link th:href="@{/css/home.css}" rel="stylesheet" />
+  <link th:href="@{/css/index.css}" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    h1 {
+	    font-weight: 600;
+	    color: #343a40;
+	    letter-spacing: 0.05em;
+	    margin-bottom: 1rem;
+	  }
+    .table thead {
+      background-color: #0d6efd;
+      color: white;
+      font-weight: 600;
+    }
+    .table tbody tr:hover {
+      background-color: #e9f2ff;
+    }
+    .btn-sm {
+      min-width: 80px;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 0.3rem; /* khoảng cách giữa icon và text */
+    }
+    #categoryFormContainer {
+	    overflow: hidden;
+	    max-height: 0;
+	    opacity: 0;
+	    transition: max-height 0.3s ease, opacity 0.3s ease;
+	    background: white;
+	    border-radius: 0.3rem;
+	    box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 0.075);
+	    margin-bottom: 1rem;
+	  }
+    #categoryFormContainer.show {
+      max-height: 300px; /* đủ để hiển thị form */
+      opacity: 1;
+    }
+    /* Gap trong form nút */
+    #categoryFormContainer form > div.d-flex.gap-2 {
+      gap: 1rem !important;
+    }
+    /* Gap giữa 2 nút dưới bảng */
+    .btn-group-footer {
+      gap: 1rem;
+    }
+    .table {
+    margin-top: 0;
+  }
+  </style>
 </head>
 <body>
-<div th:replace="~{admin :: header}"></div>
+  <div th:replace="~{admin :: header}"></div>
 
-<div class="container mt-5">
-    <h1>Quản lý danh mục</h1>
+  <div class="container my-5">
+    <h1 class="text-center ">Quản lý danh mục</h1>
 
     <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text="${successMessage}"></div>
     <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th style="display: none;">ID</th>
-            <th>Tên danh mục</th>
-            <th>Mô tả</th>
-            <th>Hành động</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="cat : ${categories}">
-            <td th:text="${cat.id}" style="display: none;"></td>
-            <td th:text="${cat.name}">Tên danh mục</td>
-            <td th:text="${cat.description}">Mô tả</td>
-            <td>
-                <a th:href="@{'/categories/edit/' + ${cat.id}}" class="btn btn-warning btn-sm">Sửa</a>
-                <form th:action="@{'/categories/delete/' + ${cat.id}}" method="post" style="display:inline;">
-                    <button type="submit" class="btn btn-danger btn-sm"
-                        onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
 
-    <div class="d-flex justify-content-between mb-3">
-    <button class="btn btn-primary" onclick="openCategoryModal()">
-        <i class='bx bx-plus'></i> Thêm danh mục mới
-    </button>
-    <a th:href="@{/posts/create}" class="btn btn-secondary">
-        <i class='bx bx-plus'></i> Tạo bài viết mới
-    </a>
-</div>
-
-</div>
-<div id="categoryModal" class="position-fixed top-50 start-50 translate-middle bg-white border rounded p-4 shadow"
-     style="display:none; z-index:1000; min-width: 400px; max-width: 90vw;">
-    <h5 class="mb-3">Thêm danh mục mới</h5>
-    <div th:if="${modalErrorMessage}" class="alert alert-danger" role="alert" th:text="${modalErrorMessage}"></div>
-
-    <form th:action="@{/categories/create}" method="post" th:object="${category}">
+    <div id="categoryFormContainer" th:classappend="${openCategoryModal} ? 'show' : ''">
+      <form th:action="@{/categories/create}" method="post" th:object="${category}">
         <input type="hidden" th:field="*{id}" />
         <div class="mb-3">
-            <label for="name" class="form-label">Tên danh mục</label>
-            <input type="text" class="form-control" th:field="*{name}" id="name" placeholder="Tên danh mục" required />
+          <label for="name" class="form-label fw-semibold">Tên danh mục</label>
+          <input type="text" class="form-control form-control-sm" th:field="*{name}" id="name" placeholder="Tên danh mục" required />
         </div>
         <div class="mb-3">
-            <label for="description" class="form-label">Mô tả</label>
-            <textarea class="form-control" th:field="*{description}" id="description" rows="3" placeholder="Mô tả"></textarea>
+          <label for="description" class="form-label fw-semibold">Mô tả</label>
+          <textarea class="form-control form-control-sm" th:field="*{description}" id="description" rows="2" placeholder="Mô tả"></textarea>
         </div>
-        <div class="d-flex justify-content-end gap-2">
-            <button type="submit" class="btn btn-success">Lưu</button>
-            <button type="button" class="btn btn-secondary" onclick="closeCategoryModal()">Hủy</button>
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-success btn-sm fw-semibold d-flex align-items-center gap-2">
+            <i class="bi bi-check-lg"></i> Lưu
+          </button>
+          <button type="button" class="btn btn-outline-secondary btn-sm fw-semibold" id="cancelCategoryFormBtn">Hủy</button>
         </div>
-    </form>
-</div>
+      </form>
+    </div>
 
-<div id="modalOverlay"
-     style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:999;"
-     onclick="closeCategoryModal()"></div>
+    <table class="table table-striped table-hover table-bordered align-middle shadow-sm mt-3">
+      <thead>
+        <tr>
+          <th style="display: none;">ID</th>
+          <th>Tên danh mục</th>
+          <th>Mô tả</th>
+          <th style="width: 180px;">Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="cat : ${categories}">
+          <td th:text="${cat.id}" style="display: none;"></td>
+          <td th:text="${cat.name}">Tên danh mục</td>
+          <td th:text="${cat.description}">Mô tả</td>
+          <td>
+            <div class="d-flex gap-2">
+              <a th:href="@{|/categories/edit/${cat.id}|}" class="btn btn-sm btn-outline-warning d-flex align-items-center" title="Sửa danh mục">
+                <i class="bi bi-pencil-square"></i> Sửa
+              </a>
+              <form th:action="@{|/categories/delete/${cat.id}|}" method="post" th:onsubmit="return confirm('Bạn có chắc muốn xóa danh mục này?');" style="display:inline-flex;">
+                <button type="submit" class="btn btn-sm btn-outline-danger d-flex align-items-center" title="Xóa danh mục">
+                  <i class="bi bi-trash"></i> Xóa
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-<script>
-    function openCategoryModal() {
-        document.getElementById('categoryModal').style.display = 'block';
-        document.getElementById('modalOverlay').style.display = 'block';
-    }
+    <div class="d-flex justify-content-end btn-group-footer mt-3">
+      <button id="openCategoryFormBtn" class="btn btn-primary d-flex align-items-center gap-2">
+        <i class="bi bi-plus-lg"></i> Thêm danh mục mới
+      </button>
+      <a th:href="@{/posts/create}" class="btn btn-secondary d-flex align-items-center gap-2">
+        <i class="bi bi-plus-lg"></i> Tạo bài viết mới
+      </a>
+    </div>
+  </div>
 
-    function closeCategoryModal() {
-        document.getElementById('categoryModal').style.display = 'none';
-        document.getElementById('modalOverlay').style.display = 'none';
-    }
+  <script>
+    const openBtn = document.getElementById('openCategoryFormBtn');
+    const cancelBtn = document.getElementById('cancelCategoryFormBtn');
+    const formContainer = document.getElementById('categoryFormContainer');
 
-    if ([[${openCategoryModal} == null ? false : openCategoryModal]]) {
-        openCategoryModal();
-    }
-    /*]]>*/
-</script>
+    openBtn.addEventListener('click', () => {
+      formContainer.classList.toggle('show');
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      formContainer.classList.remove('show');
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

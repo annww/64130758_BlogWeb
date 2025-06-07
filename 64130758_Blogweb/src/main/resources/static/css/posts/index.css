@@ -1,0 +1,91 @@
+@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600&display=swap');
+.card-post {
+  transition: box-shadow 0.2s ease-in-out;
+
+  cursor: pointer;
+  background-color: #fff;
+  border-radius: 8px;
+  min-height: 100px;
+}
+
+.card-post:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  border-left-color: #157347; /* xanh đậm hơn khi hover */
+}
+
+.mycontent {
+  max-height: 4.5em; 
+  overflow: hidden;
+  position: relative;
+  line-height: 1.5em;
+  margin-bottom: 0;
+}
+
+.mycontent::after {
+  content: "...";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding-left: 10px;
+  background: linear-gradient(to right, transparent, #fff 50%);
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.filter-form .form-select,
+.filter-form .form-control {
+  min-height: 45px;
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  transition: border-color 0.3s ease;
+}
+
+.filter-form .form-select:focus,
+.filter-form .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 5px rgba(25,135,84,0.5);
+  outline: none;
+}
+
+.btn-circle {
+  width: 55px;
+  height: 55px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #198754;
+  color: white;
+  box-shadow: 0 3px 6px rgba(25,135,84,0.5);
+  transition: background-color 0.3s ease;
+}
+
+.btn-circle:hover {
+  background-color: #157347;
+  color: #fff;
+}
+
+.post-meta {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.no-posts {
+  font-style: italic;
+  color: #888;
+  text-align: center;
+  margin-top: 40px;
+}
+
+h1 {
+    text-align: center !important;
+    margin-top: 30px !important;
+    margin-bottom: 30px !important;
+    font-weight: 900 !important; 
+    font-family: 'Noto Sans', sans-serif !important;
+}
+

@@ -200,7 +200,12 @@ public class PostController {
         reply.setContent(content);
         reply.setUser(user);
         reply.setPost(post);
-        reply.setParent(parentComment);  
+        if(parentComment.getParent() != null) {
+        	reply.setParent(parentComment.getParent());
+        }
+        else {
+        	reply.setParent(parentComment);  
+        }
         commentService.saveComment(reply);
         return "redirect:/posts/" + postId;
     }

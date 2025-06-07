@@ -21,7 +21,7 @@
         </div>
 
         <div class="mb-3">
-            <textarea class="form-control" th:field="*{content}" placeholder="Nội dung" rows="10"></textarea>
+            <textarea id="content-editor" class="form-control" th:field="*{content}" placeholder="Nội dung" rows="10"></textarea>
         </div>
 
         <div class="mb-3">
@@ -41,6 +41,37 @@
 </div>
 
 <div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:999;"></div>
+<script src="/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: '#content-editor',
+        height: 500,
+        plugins: [
+            'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            'checklist mediaembed casechange formatpainter pageembed a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown importword exportword exportpdf'
+        ],
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+        branding: false,
+        images_upload_url: '/upload-image',
+        automatic_uploads: true,
+        images_upload_handler: function (blobInfo, success, failure) {
+            const formData = new FormData();
+            formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+            fetch('/upload-image', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                success(result.location); // URL hình ảnh trả về
+            })
+            .catch(() => {
+                failure('Upload thất bại');
+            });
+        }
+    });
+</script>
 
 </body>
 </html>

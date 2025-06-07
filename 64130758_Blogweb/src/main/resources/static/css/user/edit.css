@@ -1,0 +1,72 @@
+@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600&display=swap');
+
+.edit-user-wrapper {
+  font-family: "Noto Sans", sans-serif;
+  margin: 30px auto;
+  color: #333;
+  max-width: 500px;
+}
+
+.edit-user-wrapper h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+.edit-user-form {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.edit-user-label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
+  color: #2980b9;
+}
+
+.edit-user-input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 6px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.edit-user-button {
+  margin-top: 25px;
+  background-color: #2980b9;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.edit-user-button:hover {
+  background-color: #1c5980;
+}
+
+.edit-user-back-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  color: #2980b9;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.edit-user-back-link:hover {
+  text-decoration: underline;
+}
