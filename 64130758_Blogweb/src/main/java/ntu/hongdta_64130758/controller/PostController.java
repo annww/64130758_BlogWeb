@@ -155,8 +155,6 @@ public class PostController {
         return "redirect:/posts/" + id;
     }
 
-
-
     @PostMapping("/{id}/comments")
     public String addComment(@PathVariable Long id, 
                              @RequestParam String content, 

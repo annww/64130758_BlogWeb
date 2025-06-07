@@ -18,7 +18,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // Hiển thị danh sách user
     @GetMapping
     public String listUsers(Model model) {
         List<User> users = userService.getAllUsers();
@@ -26,7 +25,6 @@ public class UserController {
         return "users/index";
     }
 
-    // Hiển thị chi tiết user theo id
     @GetMapping("/{id}")
     public String showUserDetail(@PathVariable Long id, Model model) {
         User user = userService.findById(id);
@@ -37,7 +35,6 @@ public class UserController {
         return "users/detail";
     }
 
-    // Hiển thị form tạo user mới
     @GetMapping("/create")
     public String showCreateUserForm(Model model) {
         if (!model.containsAttribute("user")) {
@@ -46,7 +43,6 @@ public class UserController {
         return "users/create";
     }
 
-    // Xử lý tạo user mới
     @PostMapping("/create")
     public String createUser(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
         userService.saveUser(user);
@@ -64,7 +60,6 @@ public class UserController {
         return "users/edit";
     }
 
-    // Xử lý cập nhật user
     @PostMapping("/edit/{id}")
     public String updateUser(@PathVariable Long id,
                              @ModelAttribute("user") User updatedUser,
@@ -86,12 +81,9 @@ public class UserController {
         userService.saveUser(existingUser);
 
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật người dùng thành công!");
-        // Chuyển về trang danh sách người dùng
         return "redirect:/users";
     }
 
-
-    // Xóa user theo id
     @PostMapping("/delete/{id}")
     public String deleteUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         userService.deleteUserById(id);

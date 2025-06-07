@@ -14,11 +14,11 @@
       background-color: #f8f9fa;
     }
     h1 {
-	    font-weight: 600;
-	    color: #343a40;
-	    letter-spacing: 0.05em;
-	    margin-bottom: 1rem;
-	  }
+      font-weight: 600;
+      color: #343a40;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
     .table thead {
       background-color: #0d6efd;
       color: white;
@@ -32,63 +32,24 @@
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      gap: 0.3rem; /* khoảng cách giữa icon và text */
+      gap: 0.3rem;
     }
-    #categoryFormContainer {
-	    overflow: hidden;
-	    max-height: 0;
-	    opacity: 0;
-	    transition: max-height 0.3s ease, opacity 0.3s ease;
-	    background: white;
-	    border-radius: 0.3rem;
-	    box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 0.075);
-	    margin-bottom: 1rem;
-	  }
-    #categoryFormContainer.show {
-      max-height: 300px; /* đủ để hiển thị form */
-      opacity: 1;
-    }
-    /* Gap trong form nút */
-    #categoryFormContainer form > div.d-flex.gap-2 {
-      gap: 1rem !important;
-    }
-    /* Gap giữa 2 nút dưới bảng */
     .btn-group-footer {
       gap: 1rem;
     }
     .table {
-    margin-top: 0;
-  }
+      margin-top: 0;
+    }
   </style>
 </head>
 <body>
   <div th:replace="~{admin :: header}"></div>
 
   <div class="container my-5">
-    <h1 class="text-center ">Quản lý danh mục</h1>
+    <h1 class="text-center">Quản lý danh mục</h1>
 
     <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text="${successMessage}"></div>
     <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
-
-    <div id="categoryFormContainer" th:classappend="${openCategoryModal} ? 'show' : ''">
-      <form th:action="@{/categories/create}" method="post" th:object="${category}">
-        <input type="hidden" th:field="*{id}" />
-        <div class="mb-3">
-          <label for="name" class="form-label fw-semibold">Tên danh mục</label>
-          <input type="text" class="form-control form-control-sm" th:field="*{name}" id="name" placeholder="Tên danh mục" required />
-        </div>
-        <div class="mb-3">
-          <label for="description" class="form-label fw-semibold">Mô tả</label>
-          <textarea class="form-control form-control-sm" th:field="*{description}" id="description" rows="2" placeholder="Mô tả"></textarea>
-        </div>
-        <div class="d-flex gap-2">
-          <button type="submit" class="btn btn-success btn-sm fw-semibold d-flex align-items-center gap-2">
-            <i class="bi bi-check-lg"></i> Lưu
-          </button>
-          <button type="button" class="btn btn-outline-secondary btn-sm fw-semibold" id="cancelCategoryFormBtn">Hủy</button>
-        </div>
-      </form>
-    </div>
 
     <table class="table table-striped table-hover table-bordered align-middle shadow-sm mt-3">
       <thead>
@@ -121,7 +82,8 @@
     </table>
 
     <div class="d-flex justify-content-end btn-group-footer mt-3">
-      <button id="openCategoryFormBtn" class="btn btn-primary d-flex align-items-center gap-2">
+      <!-- Nút mở modal -->
+      <button type="button" class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#categoryModal">
         <i class="bi bi-plus-lg"></i> Thêm danh mục mới
       </button>
       <a th:href="@{/posts/create}" class="btn btn-secondary d-flex align-items-center gap-2">
@@ -129,21 +91,41 @@
       </a>
     </div>
   </div>
+  <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form th:action="@{/categories/create}" method="post" th:object="${category}">
+          <div class="modal-header">
+            <h5 class="modal-title" id="categoryModalLabel">Thêm danh mục mới</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" th:field="*{id}" />
+            <div class="mb-3">
+              <label for="name" class="form-label">Tên danh mục</label>
+              <input type="text" class="form-control" th:field="*{name}" id="name" placeholder="Tên danh mục" required />
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">Mô tả</label>
+              <textarea class="form-control" th:field="*{description}" id="description" rows="3" placeholder="Mô tả"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            <button type="submit" class="btn btn-success">Lưu</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
-  <script>
-    const openBtn = document.getElementById('openCategoryFormBtn');
-    const cancelBtn = document.getElementById('cancelCategoryFormBtn');
-    const formContainer = document.getElementById('categoryFormContainer');
-
-    openBtn.addEventListener('click', () => {
-      formContainer.classList.toggle('show');
-    });
-
-    cancelBtn.addEventListener('click', () => {
-      formContainer.classList.remove('show');
-    });
-  </script>
-
+  <!-- Script Bootstrap -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Tự động mở lại modal nếu có lỗi hoặc yêu cầu -->
+  <script th:if="${openCategoryModal}">
+    const modal = new bootstrap.Modal(document.getElementById('categoryModal'));
+    modal.show();
+  </script>
 </body>
 </html>

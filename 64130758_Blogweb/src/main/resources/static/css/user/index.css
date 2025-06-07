@@ -1,147 +1,144 @@
 body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f5f7fa;
-      margin: 30px;
-      color: #333;
-    }
+  	font-family: "Noto Sans", sans-serif;
+	font-weight: 400;
+}
+form.edit-user-form {
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 
-    h1 {
-      text-align: center;
-      color: #2c3e50;
-      margin-bottom: 30px;
-    }
+label.edit-user-label {
+  font-weight: 600;
+  color: #495057;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      border-radius: 8px;
-      overflow: hidden;
-    }
+input.edit-user-input {
+  padding: 10px 14px;
+  font-size: 1rem;
+  border: 1.3px solid #ced4da;
+  border-radius: 6px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  outline: none;
+  width: 100%;
+}
 
-    thead {
-      background-color: #2980b9;
-      color: white;
-      font-weight: bold;
-    }
+input.edit-user-input:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 6px rgba(13, 110, 253, 0.3);
+}
 
-    th, td {
-      padding: 12px 15px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
+button.edit-user-button {
+  background-color: #28a745;
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 12px 0;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
 
-    tbody tr:hover {
-      background-color: #f1f9ff;
-      cursor: pointer;
-    }
+button.edit-user-button:hover {
+  background-color: #1e7e34;
+}
 
-    a {
-      color: #2980b9;
-      text-decoration: none;
-      margin-right: 12px;
-      font-weight: 600;
-      transition: color 0.3s ease;
-    }
+a.edit-user-back-link {
+  display: block;
+  max-width: 480px;
+  margin: 28px auto 0;
+  text-align: center;
+  font-weight: 600;
+  color: #0d6efd;
+  text-decoration: none;
+  user-select: none;
+  transition: color 0.3s ease;
+}
 
-    a:hover {
-      text-decoration: underline;
-      color: #1c5980;
-    }
+a.edit-user-back-link:hover {
+  color: #084fc1;
+  text-decoration: underline;
+}
 
-    form {
-      display: inline;
-      margin-left: 8px;
-    }
 
-    button {
-      background-color: #e74c3c;
-      border: none;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background-color 0.3s ease;
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+form {
+  display: inline;
+  margin-left: 8px;
+}
 
-    button:hover {
-      background-color: #c0392b;
-    }
+button {
+  background-color: #e74c3c;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
 
-    /* Tạo button giả để làm đồng nhất với thẻ a */
-    .action-btn {
-      background-color: #2980b9;
-      color: white;
-      border-radius: 4px;
-      padding: 6px 12px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-right: 10px;
-      text-decoration: none;
-      display: inline-block;
-      font-family: inherit;
-    }
+button:hover {
+  background-color: #c0392b;
+}
 
-    .action-btn:hover {
-      background-color: #1c5980;
-      text-decoration: none;
-      color: white;
-    }
+.action-btn {
+  background-color: #2980b9;
+  color: white;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-right: 10px;
+  text-decoration: none;
+  display: inline-block;
+  font-family: inherit;
+}
 
-    .create-user {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 10px 18px;
-      background-color: #27ae60;
-      color: white;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 700;
-      transition: background-color 0.3s ease;
-    }
+.action-btn:hover {
+  background-color: #1c5980;
+  text-decoration: none;
+  color: white;
+}
 
-    .create-user:hover {
-      background-color: #1e8449;
-    }
+.create-user {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 18px;
+  background-color: #27ae60;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+}
 
-    /* Responsive đơn giản */
-    @media (max-width: 600px) {
-      table, thead, tbody, th, td, tr {
-        display: block;
-      }
-      thead tr {
-        display: none;
-      }
-      tbody tr {
-        margin-bottom: 15px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 10px;
-        background: white;
-      }
-      tbody td {
-        padding-left: 50%;
-        position: relative;
-        border: none;
-        border-bottom: 1px solid #eee;
-      }
-      tbody td::before {
-        position: absolute;
-        left: 15px;
-        top: 12px;
-        white-space: nowrap;
-        font-weight: 700;
-        color: #2980b9;
-      }
-      tbody td:nth-of-type(1)::before { content: "Username"; }
-      tbody td:nth-of-type(2)::before { content: "Họ tên"; }
-      tbody td:nth-of-type(3)::before { content: "Email"; }
-      tbody td:nth-of-type(4)::before { content: "Hành động"; }
-      tbody td:last-child {
-        border-bottom: 0;
-      }
-    }
+.create-user:hover {
+  background-color: #1e8449;
+}
+
+.btn-sm {
+	min-width: 80px;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	gap: 0.3rem; 
+}
+
+.search-input {
+  max-width: 400px;
+  margin-bottom: 1.5rem;
+}
